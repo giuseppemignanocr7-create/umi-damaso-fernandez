@@ -1,9 +1,10 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { DEMO_PAGAMENTI } from '../../demoData';
 
 export default function SocioPagamenti() {
-  const { profile } = useAuth();
-  const pagamenti = profile?.pagamenti || [];
+  const { profile, isDemo } = useAuth();
+  const pagamenti = isDemo ? DEMO_PAGAMENTI : (profile?.pagamenti || []);
 
   return (
     <div>

@@ -1,19 +1,24 @@
 import { supabase } from './supabaseClient';
+import { isDemoMode } from './demoMode';
+import { DEMO_SOCI, DEMO_ATTIVITA, DEMO_BIBLIOTECA, DEMO_VIDEOTECA, DEMO_ALBO, DEMO_USCITE, DEMO_ENTRATE, DEMO_MEDIA, DEMO_NOTIFICHE, DEMO_PROFILE } from './demoData';
 
 // ============ PROFILES ============
 export async function fetchProfiles() {
+  if (isDemoMode()) return DEMO_SOCI;
   const { data, error } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
 
 export async function fetchProfileById(id) {
+  if (isDemoMode()) return DEMO_PROFILE;
   const { data, error } = await supabase.from('profiles').select('*').eq('id', id).single();
   if (error) throw error;
   return data;
 }
 
 export async function createProfile(profileData) {
+  if (isDemoMode()) return { ...profileData, id: 'demo-' + Date.now() };
   const { data, error } = await supabase.from('profiles').insert(profileData).select().single();
   if (error) throw error;
   return data;
@@ -27,12 +32,14 @@ export async function updateProfile(id, updates) {
 
 // ============ ATTIVITA ============
 export async function fetchAttivita() {
+  if (isDemoMode()) return DEMO_ATTIVITA;
   const { data, error } = await supabase.from('attivita').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
 
 export async function createAttivita(attData) {
+  if (isDemoMode()) { const n = { ...attData, id: 'demo-' + Date.now() }; DEMO_ATTIVITA.unshift(n); return n; }
   const { data, error } = await supabase.from('attivita').insert(attData).select().single();
   if (error) throw error;
   return data;
@@ -46,12 +53,14 @@ export async function updateAttivita(id, updates) {
 
 // ============ BIBLIOTECA ============
 export async function fetchBiblioteca() {
+  if (isDemoMode()) return DEMO_BIBLIOTECA;
   const { data, error } = await supabase.from('biblioteca').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
 
 export async function createBiblioteca(docData) {
+  if (isDemoMode()) { const n = { ...docData, id: 'demo-' + Date.now() }; DEMO_BIBLIOTECA.unshift(n); return n; }
   const { data, error } = await supabase.from('biblioteca').insert(docData).select().single();
   if (error) throw error;
   return data;
@@ -59,12 +68,14 @@ export async function createBiblioteca(docData) {
 
 // ============ VIDEOTECA ============
 export async function fetchVideoteca() {
+  if (isDemoMode()) return DEMO_VIDEOTECA;
   const { data, error } = await supabase.from('videoteca').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
 
 export async function createVideoteca(vidData) {
+  if (isDemoMode()) { const n = { ...vidData, id: 'demo-' + Date.now() }; DEMO_VIDEOTECA.unshift(n); return n; }
   const { data, error } = await supabase.from('videoteca').insert(vidData).select().single();
   if (error) throw error;
   return data;
@@ -72,12 +83,14 @@ export async function createVideoteca(vidData) {
 
 // ============ ALBO ============
 export async function fetchAlbo() {
+  if (isDemoMode()) return DEMO_ALBO;
   const { data, error } = await supabase.from('albo').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
 
 export async function createAlbo(alboData) {
+  if (isDemoMode()) { const n = { ...alboData, id: 'demo-' + Date.now() }; DEMO_ALBO.unshift(n); return n; }
   const { data, error } = await supabase.from('albo').insert(alboData).select().single();
   if (error) throw error;
   return data;
@@ -85,12 +98,14 @@ export async function createAlbo(alboData) {
 
 // ============ USCITE ============
 export async function fetchUscite() {
+  if (isDemoMode()) return DEMO_USCITE;
   const { data, error } = await supabase.from('uscite').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
 
 export async function createUscita(uscitaData) {
+  if (isDemoMode()) { const n = { ...uscitaData, id: 'demo-' + Date.now() }; DEMO_USCITE.unshift(n); return n; }
   const { data, error } = await supabase.from('uscite').insert(uscitaData).select().single();
   if (error) throw error;
   return data;
@@ -98,6 +113,7 @@ export async function createUscita(uscitaData) {
 
 // ============ ENTRATE ============
 export async function fetchEntrate() {
+  if (isDemoMode()) return DEMO_ENTRATE;
   const { data, error } = await supabase.from('entrate').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
@@ -111,12 +127,14 @@ export async function createEntrata(entrataData) {
 
 // ============ MEDIA ============
 export async function fetchMedia() {
+  if (isDemoMode()) return DEMO_MEDIA;
   const { data, error } = await supabase.from('media').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
 
 export async function createMedia(mediaData) {
+  if (isDemoMode()) { const n = { ...mediaData, id: 'demo-' + Date.now() }; DEMO_MEDIA.unshift(n); return n; }
   const { data, error } = await supabase.from('media').insert(mediaData).select().single();
   if (error) throw error;
   return data;
@@ -124,12 +142,14 @@ export async function createMedia(mediaData) {
 
 // ============ NOTIFICHE ============
 export async function fetchNotifiche() {
+  if (isDemoMode()) return DEMO_NOTIFICHE;
   const { data, error } = await supabase.from('notifiche').select('*').order('data', { ascending: false });
   if (error) throw error;
   return data || [];
 }
 
 export async function createNotifica(notData) {
+  if (isDemoMode()) { const n = { ...notData, id: 'demo-' + Date.now(), data: new Date().toISOString() }; DEMO_NOTIFICHE.unshift(n); return n; }
   const { data, error } = await supabase.from('notifiche').insert(notData).select().single();
   if (error) throw error;
   return data;
@@ -152,12 +172,14 @@ export async function createIscrizione(iscData) {
 
 // ============ CONFIGURAZIONE ============
 export async function fetchConfig() {
+  if (isDemoMode()) return { id: 1, paypal_email: 'gianluigis@virgilio.it' };
   const { data, error } = await supabase.from('configurazione').select('*').eq('id', 1).single();
   if (error) throw error;
   return data;
 }
 
 export async function updateConfig(updates) {
+  if (isDemoMode()) return { id: 1, ...updates };
   const { data, error } = await supabase.from('configurazione').update({ ...updates, updated_at: new Date().toISOString() }).eq('id', 1).select().single();
   if (error) throw error;
   return data;

@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { supabase, ADMIN_EMAIL } from '../supabaseClient';
 import { createProfile, fetchProfileById } from '../supabaseStore';
+import { DEMO_PROFILE } from '../demoData';
+import { setDemoMode } from '../demoMode';
 
 const AuthContext = createContext(null);
 
@@ -9,6 +11,7 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isDemo, setIsDemo] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -44,6 +47,17 @@ export function AuthProvider({ children }) {
     }
     setLoading(false);
   }
+
+  const loginDemo = useCallback((mode) => {
+    const demoProfile = { ...DEMO_PROFILE, is_admin: mode === 'admin' };
+    setUser({ id: 'demo', email: 'demo@damaso.edu' });
+    setProfile(demoProfile);
+    setIsAdmin(mode === 'admin');
+    setIsDemo(true);
+    setDemoMode(true);
+    setLoading(false);
+    return { success: true, isAdmin: mode === 'admin' };
+  }, []);
 
   const login = useCallback(async (email, password) => {
     if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
@@ -142,18 +156,20 @@ export function AuthProvider({ children }) {
   }, []);
 
   const logout = useCallback(async () => {
-    await supabase.auth.signOut();
+    if (!isDemo) await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
     setIsAdmin(false);
-  }, []);
+    setIsDemo(false);
+    setDemoMode(false);
+  }, [isDemo]);
 
   const updateUser = useCallback((updated) => {
     setProfile(prev => prev ? { ...prev, ...updated } : updated);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, profile, isAdmin, loading, login, register, registerOmaggio, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, profile, isAdmin, isDemo, loading, login, loginDemo, register, registerOmaggio, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

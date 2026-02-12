@@ -8,7 +8,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, loginDemo } = useAuth();
   const navigate = useNavigate();
 
   const isAdminEmail = email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
@@ -104,8 +104,33 @@ export default function LoginPage() {
           </p>
         </div>
 
+        {/* DEMO ACCESS */}
+        <div className="mt-6 bg-umi-card border border-purple-500/30 rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-3 justify-center">
+            <span className="text-xl">🔮</span>
+            <h3 className="text-sm font-bold text-purple-300 tracking-wider uppercase">Accesso Demo</h3>
+          </div>
+          <p className="text-center text-xs text-umi-muted mb-4">Esplora il portale completo senza registrazione</p>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => { const r = loginDemo('admin'); if (r.success) navigate('/admin'); }}
+              className="py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:scale-[1.02] hover:shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}
+            >
+              🛡️ Demo Admin
+            </button>
+            <button
+              onClick={() => { const r = loginDemo('socio'); if (r.success) navigate('/socio'); }}
+              className="py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:scale-[1.02] hover:shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #6366f1, #818cf8)' }}
+            >
+              🎭 Demo Socio
+            </button>
+          </div>
+        </div>
+
         <p className="text-center text-xs text-umi-dim mt-6">
-          Sistema Protetto da Incantesimi di Livello 7
+          Sistema Protetto da Incantesimi di Livello 7 — Powered by M.A.G.I.
         </p>
       </div>
     </div>

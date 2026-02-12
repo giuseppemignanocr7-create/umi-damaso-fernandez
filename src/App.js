@@ -31,6 +31,7 @@ import SocioCorsi from './pages/socio/SocioCorsi';
 import SocioAlbo from './pages/socio/SocioAlbo';
 import SocioPagamenti from './pages/socio/SocioPagamenti';
 import SocioMedia from './pages/socio/SocioMedia';
+import MagiChat from './components/shared/MagiChat';
 
 function LoadingScreen() {
   return (
@@ -101,11 +102,18 @@ function AppRoutes() {
   );
 }
 
+function MagiWrapper() {
+  const { user } = useAuth();
+  if (!user) return null;
+  return <MagiChat />;
+}
+
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <AppRoutes />
+        <MagiWrapper />
       </AuthProvider>
     </BrowserRouter>
   );
