@@ -20,6 +20,7 @@ import Contabilita from './pages/admin/Contabilita';
 import MediaCenter from './pages/admin/MediaCenter';
 import CentroNotifiche from './pages/admin/CentroNotifiche';
 import RegistriAntichi from './pages/admin/RegistriAntichi';
+import Agenda from './pages/admin/Agenda';
 
 import SocioLayout from './components/socio/SocioLayout';
 import SocioDashboard from './pages/socio/SocioDashboard';
@@ -31,6 +32,7 @@ import SocioCorsi from './pages/socio/SocioCorsi';
 import SocioAlbo from './pages/socio/SocioAlbo';
 import SocioPagamenti from './pages/socio/SocioPagamenti';
 import SocioMedia from './pages/socio/SocioMedia';
+import SocioAgenda from './pages/socio/SocioAgenda';
 import MagiChat from './components/shared/MagiChat';
 
 function LoadingScreen() {
@@ -83,6 +85,7 @@ function AppRoutes() {
         <Route path="media" element={<MediaCenter />} />
         <Route path="notifiche" element={<CentroNotifiche />} />
         <Route path="registri" element={<RegistriAntichi />} />
+        <Route path="agenda" element={<Agenda />} />
       </Route>
 
       <Route path="/socio" element={<ProtectedSocio><SocioLayout /></ProtectedSocio>}>
@@ -95,6 +98,7 @@ function AppRoutes() {
         <Route path="albo" element={<SocioAlbo />} />
         <Route path="pagamenti" element={<SocioPagamenti />} />
         <Route path="media" element={<SocioMedia />} />
+        <Route path="agenda" element={<SocioAgenda />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

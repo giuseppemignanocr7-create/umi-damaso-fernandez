@@ -1,12 +1,13 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BarChart3, Users, UserPlus, ScrollText, LogOut } from 'lucide-react';
+import { BarChart3, Users, UserPlus, ScrollText, LogOut, CalendarDays } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const navItems = [
   { to: '/admin', icon: <BarChart3 size={18} />, label: 'Dashboard', end: true },
   { to: '/admin/soci', icon: <Users size={18} />, label: 'Elenco Soci' },
   { to: '/admin/nuovo-socio', icon: <UserPlus size={18} />, label: 'Nuovo Socio' },
+  { to: '/admin/agenda', icon: <CalendarDays size={18} />, label: 'Agenda' },
 ];
 
 export default function AdminLayout() {
