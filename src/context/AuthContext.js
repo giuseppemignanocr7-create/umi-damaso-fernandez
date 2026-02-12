@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password: 'admin-damaso-2026' });
+      const { error } = await supabase.auth.signInWithPassword({ email, password: 'admin-damaso-2026' });
       if (error) {
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
@@ -71,7 +71,7 @@ export function AuthProvider({ children }) {
       return { success: true, isAdmin: true };
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return { success: false, error: 'Credenziali non valide.' };
     return { success: true, isAdmin: false };
   }, []);

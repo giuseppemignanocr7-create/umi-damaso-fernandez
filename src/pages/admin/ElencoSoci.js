@@ -7,10 +7,8 @@ export default function ElencoSoci() {
   const [search, setSearch] = useState('');
   const [filtroStato, setFiltroStato] = useState('Tutti');
   const [soci, setSoci] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    fetchProfiles().then(data => { setSoci(data); setLoading(false); }).catch(() => setLoading(false));
+    fetchProfiles().then(data => { setSoci(data); }).catch(() => {});
   }, []);
 
   const filtered = soci.filter(s => {
