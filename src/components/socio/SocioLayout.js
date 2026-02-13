@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { LogOut, Menu, X, Home, ShoppingBag, BookOpen, Film, User, Trophy, CreditCard, Image, CalendarDays, GraduationCap } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import logoImg from '../../assets/logo-umi.jpg';
 
 const menuItems = [
   { to: '/socio', icon: <Home size={18} />, label: 'Dashboard', end: true },
@@ -41,7 +42,7 @@ export default function SocioLayout() {
       {/* SIDEBAR HEADER */}
       <div className="p-5 border-b border-umi-border flex items-center justify-between">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/socio')}>
-          <span className="text-umi-primary font-bold text-lg">DF</span>
+          <img src={logoImg} alt="UMI" className="w-9 h-9 rounded-full object-cover ring-1 ring-umi-gold/40" draggable={false} />
           <span className="small-caps font-bold text-umi-text tracking-widest text-sm">DAMASO FERNANDEZ</span>
         </div>
         <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-1 hover:bg-umi-input rounded-lg transition-colors">
@@ -83,7 +84,7 @@ export default function SocioLayout() {
           <Menu size={22} className="text-umi-muted" />
         </button>
         <div className="flex items-center gap-2">
-          <span className="text-umi-primary font-bold text-lg">DF</span>
+          <img src={logoImg} alt="UMI" className="w-8 h-8 rounded-full object-cover ring-1 ring-umi-gold/40" draggable={false} />
           <span className="small-caps font-bold text-umi-text tracking-widest text-sm">DAMASO FERNANDEZ</span>
         </div>
         <div className="flex items-center gap-2">

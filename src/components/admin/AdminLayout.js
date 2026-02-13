@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { BarChart3, Users, UserPlus, ScrollText, LogOut, CalendarDays, Menu, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import logoImg from '../../assets/logo-umi.jpg';
 
 const navItems = [
   { to: '/admin', icon: <BarChart3 size={18} />, label: 'Dashboard', end: true },
@@ -33,8 +34,8 @@ export default function AdminLayout() {
   const sidebarContent = (
     <>
       <div className="p-5 border-b border-umi-border flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-umi-primary text-lg">✦</span>
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/admin')}>
+          <img src={logoImg} alt="UMI" className="w-9 h-9 rounded-full object-cover ring-1 ring-umi-gold/40" draggable={false} />
           <span className="small-caps font-bold text-umi-text tracking-widest text-sm">DAMASO FERNANDEZ</span>
         </div>
         <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-1 hover:bg-umi-input rounded-lg transition-colors">
@@ -82,7 +83,7 @@ export default function AdminLayout() {
           <Menu size={22} className="text-umi-muted" />
         </button>
         <div className="flex items-center gap-2">
-          <span className="text-umi-primary text-lg">✦</span>
+          <img src={logoImg} alt="UMI" className="w-8 h-8 rounded-full object-cover ring-1 ring-umi-gold/40" draggable={false} />
           <span className="small-caps font-bold text-umi-text tracking-widest text-sm">DAMASO FERNANDEZ</span>
         </div>
         <button onClick={handleLogout} className="p-2 hover:bg-umi-input rounded-lg transition-colors">
