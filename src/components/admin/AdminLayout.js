@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import AnimatedPage from '../shared/AnimatedPage';
 import { BarChart3, Users, UserPlus, ScrollText, LogOut, CalendarDays, Menu, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import logoImg from '../../assets/logo-umi.jpg';
@@ -109,7 +110,7 @@ export default function AdminLayout() {
 
         {/* MAIN CONTENT */}
         <main className="flex-1 lg:ml-64 p-4 sm:p-6 overflow-y-auto min-h-screen">
-          <Outlet />
+          <AnimatedPage />
         </main>
       </div>
     </div>

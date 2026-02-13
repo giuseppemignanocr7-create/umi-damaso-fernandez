@@ -68,7 +68,7 @@ export default function AdminDashboard() {
   const greeting = hour < 12 ? 'Buongiorno' : hour < 18 ? 'Buon pomeriggio' : 'Buonasera';
 
   return (
-    <div>
+    <div className="magic-fade-in">
       {/* HERO GREETING */}
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -83,7 +83,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* STATS ROW */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6 magic-stagger">
         <div className="bg-umi-card border border-umi-border rounded-xl p-4 card-hover">
           <div className="flex items-center justify-between mb-2">
             <Users size={18} className="text-blue-400" />
@@ -187,12 +187,12 @@ export default function AdminDashboard() {
       <div className="mb-4">
         <h2 className="text-sm font-bold text-umi-text tracking-wider uppercase">Moduli</h2>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 magic-stagger">
         {cards.map(card => (
           <button
             key={card.title}
             onClick={() => navigate(card.path)}
-            className="bg-umi-card border border-umi-border rounded-xl p-4 text-left card-hover group"
+            className="bg-umi-card border border-umi-border rounded-xl p-4 text-left card-magic magic-glow group"
           >
             <div className="text-2xl mb-2">{card.icon}</div>
             <h3 className="text-[11px] font-bold text-umi-text tracking-wider uppercase mb-1 group-hover:text-umi-primary transition-colors">
