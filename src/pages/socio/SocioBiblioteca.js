@@ -89,15 +89,10 @@ export default function SocioBiblioteca() {
                 </div>
               )}
               <div className="flex gap-3">
-                {selected.url ? (
-                  <a href={selected.url} target="_blank" rel="noopener noreferrer" className="flex-1 gradient-primary text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                    <ExternalLink size={16} /> Apri Documento
-                  </a>
-                ) : (
-                  <button className="flex-1 gradient-primary text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                    <BookOpen size={16} /> Leggi Online
-                  </button>
-                )}
+                <button onClick={() => { if (selected.url && selected.url !== '#') window.open(selected.url, '_blank'); }}
+                  className="flex-1 gradient-primary text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                  {selected.url && selected.url !== '#' ? <><ExternalLink size={16} /> Apri Documento</> : <><BookOpen size={16} /> Leggi Online</>}
+                </button>
                 <button className="px-4 py-2.5 bg-umi-input border border-umi-border rounded-lg text-sm text-umi-muted hover:text-umi-text transition-colors flex items-center gap-2">
                   <Download size={16} /> PDF
                 </button>

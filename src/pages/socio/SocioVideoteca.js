@@ -72,7 +72,7 @@ export default function SocioVideoteca() {
           <div className="bg-umi-card border border-umi-border rounded-2xl max-w-lg w-full" onClick={e => e.stopPropagation()}>
             <div className="h-52 bg-umi-input rounded-t-2xl flex items-center justify-center relative">
               <button onClick={() => {
-                if (selected.url) window.open(selected.url, '_blank');
+                if (selected.url && selected.url !== '#') window.open(selected.url, '_blank');
               }} className="w-20 h-20 rounded-full bg-umi-primary/80 flex items-center justify-center hover:bg-umi-primary transition-colors cursor-pointer">
                 <Play size={36} className="text-white ml-1" />
               </button>
@@ -91,14 +91,14 @@ export default function SocioVideoteca() {
               </div>
               {selected.descrizione && <p className="text-sm text-umi-muted mb-6 bg-umi-input rounded-lg p-4">{selected.descrizione}</p>}
               <div className="flex gap-3">
-                <button onClick={() => { if (selected.url) window.open(selected.url, '_blank'); }}
+                <button onClick={() => { if (selected.url && selected.url !== '#') window.open(selected.url, '_blank'); }}
                   className="flex-1 gradient-primary text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                   <Play size={16} /> Guarda Video
                 </button>
-                {selected.url && (
-                  <a href={selected.url} target="_blank" rel="noopener noreferrer" className="px-4 py-2.5 bg-umi-input border border-umi-border rounded-lg text-sm text-umi-muted hover:text-umi-text transition-colors flex items-center gap-2">
+                {selected.url && selected.url !== '#' && (
+                  <button onClick={() => window.open(selected.url, '_blank')} className="px-4 py-2.5 bg-umi-input border border-umi-border rounded-lg text-sm text-umi-muted hover:text-umi-text transition-colors flex items-center gap-2">
                     <ExternalLink size={16} />
-                  </a>
+                  </button>
                 )}
               </div>
             </div>

@@ -86,7 +86,7 @@ export default function SocioMedia() {
                 {selected.data && <div className="flex items-center gap-2 text-xs text-umi-muted">📅 {new Date(selected.data).toLocaleDateString('it-IT')}</div>}
               </div>
               <div className="flex gap-3">
-                <button onClick={() => { if (selected.url) window.open(selected.url, '_blank'); }}
+                <button onClick={() => { if (selected.url && selected.url !== '#') window.open(selected.url, '_blank'); }}
                   className="flex-1 gradient-primary text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                   <Eye size={16} /> Visualizza
                 </button>

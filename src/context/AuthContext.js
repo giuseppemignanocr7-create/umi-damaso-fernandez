@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { supabase, ADMIN_EMAIL } from '../supabaseClient';
 import { createProfile, fetchProfileById } from '../supabaseStore';
 import { DEMO_PROFILE } from '../demoData';
-import { setDemoMode } from '../demoMode';
+import { setDemoMode, isDemoMode } from '../demoMode';
 
 const AuthContext = createContext(null);
 
@@ -24,7 +24,7 @@ export function AuthProvider({ children }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         loadProfile(session.user);
-      } else {
+      } else if (!isDemoMode()) {
         setUser(null);
         setProfile(null);
         setIsAdmin(false);
