@@ -89,11 +89,11 @@ export default function SocioDashboard() {
   const dailyQuote = magicQuotes[new Date().getDate() % magicQuotes.length];
 
   return (
-    <div>
+    <div className="magic-fade-in">
       {/* HERO */}
       <div className="text-center mb-8">
-        <div className="text-4xl mb-3">✦</div>
-        <h1 className="text-2xl font-bold text-umi-text tracking-wider uppercase mb-2">
+        <div className="text-4xl mb-3 magic-float">✦</div>
+        <h1 className="text-2xl font-bold tracking-wider uppercase mb-2 magic-gradient-text magic-text-reveal">
           {greeting}, {user?.nome || 'Mago'}
         </h1>
         <p className="text-umi-muted text-sm max-w-lg mx-auto italic">"{dailyQuote}"</p>
@@ -103,7 +103,7 @@ export default function SocioDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         {nextEvent && (
           <div className="lg:col-span-2 rounded-xl p-5 border border-umi-primary/30 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(124,58,237,0.08))' }}>
-            <div className="absolute top-2 right-3 text-[10px] text-umi-primary-light font-bold uppercase flex items-center gap-1"><Sparkles size={10} /> Prossimo Evento</div>
+            <div className="absolute top-2 right-3 text-[10px] text-umi-primary-light font-bold uppercase flex items-center gap-1 magic-sparkle"><Sparkles size={10} /> Prossimo Evento</div>
             <h3 className="text-lg font-bold text-umi-text mb-1">{nextEvent.titolo}</h3>
             <p className="text-xs text-umi-muted mb-4">{nextEvent.tipologia} · {new Date(nextEvent.data).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })}{nextEvent.luogo ? ` · ${nextEvent.luogo}` : ''}</p>
             <CountdownTimer targetDate={nextEvent.data} />
@@ -137,7 +137,7 @@ export default function SocioDashboard() {
         <h2 className="text-sm font-bold text-umi-text tracking-wider uppercase mb-3 flex items-center gap-2">
           <span>🎖️</span> I Tuoi Traguardi
         </h2>
-        <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+        <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 magic-stagger">
           {BADGES.map(b => (
             <div key={b.id} title={`${b.name}: ${b.desc}`}
               className={`flex flex-col items-center p-2 rounded-xl transition-all ${b.unlocked
@@ -147,6 +147,40 @@ export default function SocioDashboard() {
               <span className="text-[8px] text-umi-muted text-center leading-tight">{b.name}</span>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* TRICK OF THE DAY */}
+      <div className="mb-6 rounded-xl p-5 border border-umi-gold/30 magic-shimmer relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(212,168,67,0.08), rgba(184,146,46,0.04))' }}>
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 rounded-full bg-umi-gold/20 flex items-center justify-center text-2xl shrink-0 magic-float">🎩</div>
+          <div className="flex-1">
+            <p className="text-xs font-bold text-umi-gold tracking-wider uppercase mb-2 flex items-center gap-1">
+              <Sparkles size={10} /> Trucco del Giorno
+            </p>
+            <p className="text-sm text-umi-text font-semibold mb-1">{
+              [
+                'Il Mazzo Telepatico',
+                'La Moneta Fantasma',
+                'La Carta Acrobata',
+                'Previsione Infallibile',
+                'L\'Elastico Impossibile',
+                'Il Nodo che Sparisce',
+                'La Lettura del Pensiero',
+              ][new Date().getDate() % 7]
+            }</p>
+            <p className="text-xs text-umi-muted leading-relaxed">{
+              [
+                'Fai scegliere una carta, sbircia quella sotto. Dopo il taglio, la carta scelta sarà accanto alla tua carta chiave.',
+                'Copri una moneta con la mano, battila sotto il tavolo. Il segreto: lasciala scivolare nel grembo durante la copertura.',
+                'Mostra una carta a faccia in su. Chiudi la mano e riaprila: è girata! Usa il pollice per capovolgerla impercettibilmente.',
+                'Scrivi "37" su un foglio sigillato. Chiedi un numero tra 1-50, cifre dispari diverse. L\'80% pensa 37!',
+                'Intreccia un elastico tra le dita. Con un movimento rapido, sembra attraversare le dita come per magia.',
+                'Fai un nodo in un fazzoletto. Con una trazione, il nodo sparisce! Il segreto: è un falso nodo che si scioglie.',
+                'Chiedi di pensare a un colore. Dì "rosso". Funziona il 40% delle volte — e quando funziona, è un miracolo!',
+              ][new Date().getDate() % 7]
+            }</p>
+          </div>
         </div>
       </div>
 
@@ -168,12 +202,12 @@ export default function SocioDashboard() {
       <div className="mb-4">
         <h2 className="text-sm font-bold text-umi-text tracking-wider uppercase">Menu Rapido</h2>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 magic-stagger">
         {visibleCards.map(card => (
           <button
             key={card.title}
             onClick={() => navigate(card.path)}
-            className="bg-umi-card border border-umi-border rounded-xl p-4 text-left card-hover group"
+            className="bg-umi-card border border-umi-border rounded-xl p-4 text-left card-magic magic-glow group"
           >
             <div className="text-2xl mb-2">{card.icon}</div>
             <h3 className="text-[11px] font-bold text-umi-text tracking-wider uppercase mb-1 group-hover:text-umi-primary transition-colors">

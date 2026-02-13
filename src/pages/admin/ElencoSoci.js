@@ -43,7 +43,7 @@ export default function ElencoSoci() {
   };
 
   return (
-    <div>
+    <div className="magic-fade-in">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-umi-text tracking-wider uppercase">Registro Soci</h1>
         <span className="text-xs text-umi-dim">{filtered.length} di {soci.length} soci</span>

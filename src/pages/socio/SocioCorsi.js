@@ -33,7 +33,7 @@ export default function SocioCorsi() {
   };
 
   return (
-    <div>
+    <div className="magic-fade-in">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-umi-text tracking-wider uppercase">I Miei Corsi</h1>
         <p className="text-umi-muted text-sm">Il tuo registro delle attività e lezioni.</p>
@@ -55,7 +55,7 @@ export default function SocioCorsi() {
           <p className="text-umi-muted text-sm">Nessun corso trovato con i filtri correnti.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 magic-stagger">
           {filtered.map(att => {
             const isPast = new Date(att.data) < new Date();
             return (
@@ -87,8 +87,8 @@ export default function SocioCorsi() {
 
       {/* DETAIL MODAL */}
       {selected && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
-          <div className="bg-umi-card border border-umi-border rounded-2xl max-w-lg w-full" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 magic-backdrop" onClick={() => setSelected(null)}>
+          <div className="bg-umi-card border border-umi-border rounded-2xl max-w-lg w-full magic-modal" onClick={e => e.stopPropagation()}>
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <span className="text-4xl">{selected.tipologia === 'Masterclass' ? '🎓' : selected.tipologia === 'Congresso UMI' ? '🏛️' : '📖'}</span>

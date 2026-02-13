@@ -17,7 +17,7 @@ export default function SocioVideoteca() {
   });
 
   return (
-    <div>
+    <div className="magic-fade-in">
       <div className="mb-2">
         <h1 className="text-2xl font-bold text-umi-text tracking-wider uppercase">Videoteca Virtuale UMI</h1>
         <p className="text-umi-muted text-sm">Archivio multimediale di lezioni, seminari e congressi.</p>
@@ -46,9 +46,9 @@ export default function SocioVideoteca() {
           <p className="text-umi-muted text-sm">Nessuna registrazione trovata nella videoteca virtuale.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 magic-stagger">
           {filtered.map(vid => (
-            <div key={vid.id} onClick={() => setSelected(vid)} className="bg-umi-card border border-umi-border rounded-xl overflow-hidden card-hover cursor-pointer group">
+            <div key={vid.id} onClick={() => setSelected(vid)} className="bg-umi-card border border-umi-border rounded-xl overflow-hidden card-magic magic-glow cursor-pointer group">
               <div className="h-36 bg-umi-input flex items-center justify-center relative">
                 <div className="w-14 h-14 rounded-full bg-black/40 flex items-center justify-center group-hover:bg-umi-primary/80 transition-colors">
                   <Play size={24} className="text-white ml-1" />
@@ -68,8 +68,8 @@ export default function SocioVideoteca() {
 
       {/* VIDEO DETAIL MODAL */}
       {selected && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
-          <div className="bg-umi-card border border-umi-border rounded-2xl max-w-lg w-full" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 magic-backdrop" onClick={() => setSelected(null)}>
+          <div className="bg-umi-card border border-umi-border rounded-2xl max-w-lg w-full magic-modal" onClick={e => e.stopPropagation()}>
             <div className="h-52 bg-umi-input rounded-t-2xl flex items-center justify-center relative">
               <button onClick={() => {
                 if (selected.url && selected.url !== '#') window.open(selected.url, '_blank');

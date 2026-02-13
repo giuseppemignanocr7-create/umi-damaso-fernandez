@@ -19,7 +19,7 @@ export default function SocioMedia() {
   });
 
   return (
-    <div>
+    <div className="magic-fade-in">
       <div className="mb-2">
         <h1 className="text-2xl font-bold text-umi-text tracking-wider uppercase">Media</h1>
         <p className="text-umi-muted text-sm">Documenti, foto e risorse didattiche.</p>

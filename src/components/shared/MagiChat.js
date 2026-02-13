@@ -1,58 +1,98 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const MAGI_RESPONSES = {
   greeting: [
-    'Benvenuto nel Portale UMI! Sono MAGI, la tua assistente magica. Come posso aiutarti?',
-    'Salve, Mago! MAGI al tuo servizio. Chiedimi qualsiasi cosa sul portale.',
+    '✨ Benvenuto nel Portale UMI! Sono MAGI, la tua assistente magica. Posso navigare l\'app per te, darti informazioni o guidarti. Cosa desideri?',
+    '🔮 Salve, Mago! MAGI al tuo servizio. Chiedimi qualsiasi cosa: posso portarti in qualsiasi sezione, spiegarti le funzionalità o raccontarti la storia dell\'UMI.',
   ],
   soci: [
-    'La sezione Soci ti permette di gestire tutti gli iscritti. Puoi filtrare per stato, cercare per nome o matricola, e aggiungere nuovi soci omaggio.',
-    'Attualmente ci sono 12 soci registrati. 9 attivi, 1 scaduto, 1 sospeso e 1 onorario. Vuoi che ti aiuti con qualcosa di specifico?',
+    '👥 La sezione Soci gestisce tutti gli iscritti. Puoi filtrare per stato (Attivo/Sospeso/Scaduto), cercare per nome o matricola, cambiare stato e aggiungere nuovi soci.\n\n💡 Dì "vai ai soci" per aprire la pagina.',
   ],
   attivita: [
-    'Il Catalogo Attività gestisce corsi, masterclass, congressi e oggettistica. Ogni attività ha un prezzo calcolato automaticamente in base alla tipologia e modalità.',
-    'Ci sono 8 attività pubblicate: 2 Masterclass, 1 Lezione, 1 Campus Online, 1 Congresso, 1 Viaggio Studi, 1 Evento e 1 Oggettistica.',
+    '📋 Il Catalogo gestisce corsi, masterclass, congressi e oggettistica. Ogni attività ha prezzo automatico per tipologia e modalità. Ci sono lezioni gratuite e a pagamento.\n\n💡 Dì "vai al catalogo" per gestire le attività.',
   ],
   biblioteca: [
-    'La Biblioteca Virtuale contiene 6 documenti tra PDF, dispense e pergamene. I soci possono consultarli dalla loro area riservata.',
+    '📚 La Biblioteca Virtuale contiene testi, dispense e pergamene accademiche. Puoi cercare per titolo, autore o categoria. Ogni documento è consultabile con un click.\n\n💡 Dì "vai alla biblioteca" per esplorare.',
   ],
   videoteca: [
-    'La Videoteca ha 5 contenuti multimediali: lezioni magistrali, seminari, tutorial e highlights dei congressi.',
+    '🎬 La Videoteca contiene lezioni magistrali, seminari, tutorial e highlights dei congressi. Filtra per categoria e cerca per titolo o autore.\n\n💡 Dì "vai alla videoteca" per guardare.',
   ],
   contabilita: [
-    'La Contabilità mostra: Uscite €3.889,88 per piattaforme e organizzazione eventi. Entrate €840,00 da iscrizioni e acquisti soci. Bilancio e configurazione PayPal.',
+    '💰 La Contabilità mostra il bilancio completo: uscite per piattaforme e organizzazione, entrate da iscrizioni e acquisti. Include la configurazione PayPal per i pagamenti.\n\n💡 Dì "vai alla contabilità" per i dettagli.',
   ],
   shop: [
-    'Lo Shop UMI mostra tutte le attività a pagamento. I soci possono acquistare corsi, masterclass e oggettistica direttamente online con PayPal.',
+    '🛍️ Lo Shop UMI mostra tutte le attività disponibili. I soci possono acquistare corsi e masterclass direttamente online. Ogni acquisto viene registrato automaticamente.\n\n💡 Dì "vai allo shop" per esplorare.',
   ],
   albo: [
-    "L'Albo d'Oro raccoglie 5 premi e onorificenze: dal FISM Grand Prix alla Laurea Honoris Causa. Un catalogo dei migliori talenti UMI.",
+    '🏆 L\'Albo d\'Oro raccoglie premi e onorificenze: dal FISM Grand Prix alla Laurea Honoris Causa. Un catalogo dei migliori talenti UMI attraverso i decenni.\n\n💡 Dì "vai all\'albo" per ammirare i campioni.',
   ],
   notifiche: [
-    'Il Centro Notifiche monitora: scadenze tessere, pagamenti pendenti, attività imminenti e comunicazioni generali.',
+    '🔔 Il Centro Notifiche monitora scadenze tessere, pagamenti pendenti, attività imminenti e comunicazioni. Puoi creare, modificare ed eliminare notifiche.\n\n💡 Dì "vai alle notifiche" per gestirle.',
   ],
   media: [
-    'Il Media Center gestisce foto, attestati e materiale didattico. Puoi caricare nuovi file e collegarli alle attività.',
+    '🖼️ Il Media Center gestisce foto, attestati e materiale didattico. Puoi visualizzare e scaricare ogni file. Il centro raccoglie ricordi di congressi e eventi.\n\n💡 Dì "vai ai media" per esplorare.',
   ],
   profilo: [
-    'Il Profilo mostra i tuoi dati personali, la tessera digitale, i corsi frequentati e lo storico pagamenti.',
+    '👤 Il Profilo mostra i tuoi dati personali, la tessera digitale con QR code, i badge sbloccati, i corsi frequentati e lo storico pagamenti completo.\n\n💡 Dì "vai al profilo" per vederlo.',
+  ],
+  registri: [
+    '📜 I Registri Antichi contengono 79 anni di storia dell\'UMI! Troverai la Cronologia Storica con 15 eventi dal 1947 ad oggi, 8 Documenti Antichi e 5 Maestri Leggendari.\n\n💡 Dì "vai ai registri" per esplorare l\'archivio.',
+  ],
+  agenda: [
+    '📅 L\'Agenda mostra il calendario degli eventi con i prossimi corsi, masterclass e congressi. Naviga per mese e vedi gli eventi in arrivo.\n\n💡 Dì "vai all\'agenda" per consultarla.',
+  ],
+  corsi: [
+    '🎓 I Miei Corsi mostra tutte le attività a cui sei iscritto. Puoi filtrare per futuri/passati/online e iscriverti a nuovi corsi con un click.\n\n💡 Dì "vai ai corsi" per il tuo registro.',
+  ],
+  pagamenti: [
+    '💳 Pagamenti mostra lo storico completo: totale, saldato e pendente. Puoi pagare direttamente le quote pendenti e scaricare le ricevute.\n\n💡 Dì "vai ai pagamenti" per il riepilogo.',
   ],
   help: [
-    'Posso aiutarti con:\n• Gestione Soci e iscrizioni\n• Catalogo Attività e Shop\n• Biblioteca e Videoteca\n• Contabilità e pagamenti\n• Albo d\'Oro e premi\n• Media Center\n• Qualsiasi domanda sul portale UMI!',
+    '🔮 **MAGI può fare tutto questo:**\n\n📍 **Navigazione** — Dì "vai a [sezione]" per aprire qualsiasi pagina\n📊 **Info** — Chiedi di soci, attività, biblioteca, contabilità...\n📜 **Storia** — Chiedi della storia UMI o dei maestri leggendari\n🎩 **Trucchi** — Dì "trucco del giorno" per un segreto magico\n❓ **Aiuto** — Chiedi "cosa puoi fare" per questa lista\n\n**Sezioni disponibili:** Dashboard, Soci, Shop, Biblioteca, Videoteca, Corsi, Albo, Media, Agenda, Pagamenti, Profilo, Registri, Catalogo, Contabilità, Notifiche',
   ],
   magia: [
-    'La magia è l\'arte di creare meraviglia. L\'UMI Damaso Fernandez è dedicata a preservare e tramandare quest\'arte attraverso formazione, eventi e una comunità di appassionati.',
-    'Damaso Fernandez è stato un pioniere della magia italiana. L\'Università porta il suo nome in onore del suo contributo all\'arte dell\'illusionismo.',
+    '✨ L\'Università della Magia Italiana – Damaso Fernandez è stata fondata nel 1947 a Roma. Il Maestro Fernandez creò l\'Accademia per preservare l\'arte dell\'illusionismo italiano.\n\nOggi l\'UMI conta oltre 500 soci attivi con masterclass, congressi internazionali, viaggi studi e una biblioteca di 1.200+ volumi.\n\n💡 Dì "vai ai registri" per esplorare 79 anni di storia!',
+    '🎩 Damaso Fernandez (1912–1989) fu un pioniere dell\'illusionismo italiano. Fondò l\'Accademia nel 1947 con 12 soci. Il motto "Ars Magica Aeterna" guida ancora oggi la missione UMI.\n\nNel 1978 l\'Accademia divenne Università, introducendo corsi strutturati. Nel 2024 è nato il portale MAGI che stai usando ora!',
+  ],
+  trick: [
+    '🎩 **Trucco del Giorno: Il Mazzo Telepatico**\nFai scegliere una carta a un volontario. Mentre lui la guarda, dì: "Sto leggendo la tua mente...". In realtà, prima di dare il mazzo hai sbirciato la carta in fondo. Quando il volontario rimette la carta, fai un taglio. La sua carta sarà accanto a quella che conosci!\n\n*"La magia non è nell\'inganno, è nella meraviglia." — D. Fernandez*',
+    '🃏 **Trucco del Giorno: La Moneta che Attraversa il Tavolo**\nMetti una moneta sul tavolo, coprila con la mano. Con l\'altra mano batti sotto il tavolo. Togli la mano dal tavolo: la moneta è sparita! Il segreto: lasciala scivolare nel grembo durante il gesto di copertura.\n\n*"Ogni illusione è una storia raccontata con le mani." — G. Rosetti*',
+    '✨ **Trucco del Giorno: La Carta Acrobata**\nMostra una carta a faccia in su sul palmo. Chiudi lentamente la mano e riaprila: la carta si è girata a faccia in giù! Il segreto: mentre chiudi la mano, usa il pollice per capovolgere la carta con un movimento impercettibile.\n\n*"Il segreto non è nel trucco, è nella presentazione." — M. Bellini*',
+    '🔮 **Trucco del Giorno: Previsione Infallibile**\nPrima dello spettacolo, scrivi "37" su un foglio e sigillalo. Chiedi al pubblico: "Pensate a un numero tra 1 e 50, entrambe le cifre dispari e diverse." L\'80% delle persone pensa 37! Apri la busta.\n\n*"Il mentalista non legge la mente, guida il pensiero." — S. Rinaldi*',
+  ],
+  curiosita: [
+    '💡 **Lo sapevi?** Il termine "prestigiatore" viene dal latino "praestigiae" (illusioni). In italiano antico significava "chi fa le prestigi", cioè meraviglie.',
+    '💡 **Lo sapevi?** Il primo libro di magia stampato risale al 1584: "The Discoverie of Witchcraft" di Reginald Scot, che svelava i trucchi per combattere la superstizione.',
+    '💡 **Lo sapevi?** Harry Houdini non era il suo vero nome. Si chiamava Erik Weisz ed era nato in Ungheria nel 1874. Scelse "Houdini" in onore del mago francese Robert-Houdin.',
+    '💡 **Lo sapevi?** La FISM (Fédération Internationale des Sociétés Magiques) è stata fondata nel 1948, solo un anno dopo l\'UMI! Il congresso mondiale si tiene ogni 3 anni.',
   ],
   default: [
-    'Interessante domanda! Come MAGI, posso guidarti in tutte le sezioni del portale. Prova a chiedermi di soci, attività, biblioteca, contabilità o qualsiasi altra area.',
-    'Non sono sicura di aver capito. Posso aiutarti con la navigazione del portale, spiegarti le funzionalità o darti statistiche. Cosa ti serve?',
+    '🔮 Domanda interessante! Posso aiutarti con:\n• **Navigazione** — "vai a [sezione]"\n• **Informazioni** — chiedi di qualsiasi area\n• **Trucchi** — "trucco del giorno"\n• **Storia UMI** — "registri" o "storia"\n\nProva a riformulare o chiedi "aiuto" per la lista completa!',
   ],
 };
 
+const NAV_MAP = {
+  dashboard: '/socio', home: '/socio',
+  shop: '/socio/shop', negozio: '/socio/shop', acquisti: '/socio/shop',
+  biblioteca: '/socio/biblioteca', libri: '/socio/biblioteca',
+  videoteca: '/socio/videoteca', video: '/socio/videoteca',
+  corsi: '/socio/corsi', 'miei corsi': '/socio/corsi', lezioni: '/socio/corsi',
+  albo: '/socio/albo', 'albo d\'oro': '/socio/albo', premi: '/socio/albo', trofei: '/socio/albo',
+  media: '/socio/media', foto: '/socio/media', immagini: '/socio/media',
+  agenda: '/socio/agenda', calendario: '/socio/agenda', eventi: '/socio/agenda',
+  pagamenti: '/socio/pagamenti', ricevute: '/socio/pagamenti',
+  profilo: '/socio/profilo', tessera: '/socio/profilo', 'dati personali': '/socio/profilo',
+  registri: '/admin/registri', 'registri antichi': '/admin/registri', storia: '/admin/registri', archivio: '/admin/registri',
+  soci: '/admin/soci', 'elenco soci': '/admin/soci', iscritti: '/admin/soci',
+  catalogo: '/admin/catalogo', attivita: '/admin/catalogo',
+  contabilita: '/admin/contabilita', bilancio: '/admin/contabilita',
+  notifiche: '/admin/notifiche',
+  'nuovo socio': '/admin/nuovo-socio',
+};
+
 function getPageContext(pathname) {
-  if (pathname.includes('soci') || pathname.includes('gestione-soci') || pathname.includes('nuovo-socio')) return 'soci';
+  if (pathname.includes('soci') || pathname.includes('nuovo-socio')) return 'soci';
   if (pathname.includes('catalogo') || pathname.includes('attivit')) return 'attivita';
   if (pathname.includes('biblioteca')) return 'biblioteca';
   if (pathname.includes('videoteca')) return 'videoteca';
@@ -62,6 +102,10 @@ function getPageContext(pathname) {
   if (pathname.includes('notifiche')) return 'notifiche';
   if (pathname.includes('media')) return 'media';
   if (pathname.includes('profilo')) return 'profilo';
+  if (pathname.includes('registri')) return 'registri';
+  if (pathname.includes('agenda')) return 'agenda';
+  if (pathname.includes('corsi')) return 'corsi';
+  if (pathname.includes('pagamenti')) return 'pagamenti';
   return null;
 }
 
@@ -72,34 +116,62 @@ function pickResponse(key) {
 
 function generateResponse(input, pathname) {
   const lower = input.toLowerCase();
-  if (lower.match(/ciao|salve|buon|hello|hey/)) return pickResponse('greeting');
+
+  // Navigation commands
+  const navMatch = lower.match(/(?:vai|porta|apri|mostra|naviga)\s+(?:a |al |alla |ai |alle |allo )?(.+)/);
+  if (navMatch) {
+    const dest = navMatch[1].trim().replace(/['"]/g, '');
+    for (const [key, path] of Object.entries(NAV_MAP)) {
+      if (dest.includes(key) || key.includes(dest)) {
+        return `NAV::${path}::✨ Ti porto subito a **${key.charAt(0).toUpperCase() + key.slice(1)}**! Apparecchio...`;
+      }
+    }
+  }
+
+  // Trick of the day
+  if (lower.match(/trucco|trick|segreto|effetto|illusione/)) return pickResponse('trick');
+  // Curiosità
+  if (lower.match(/curiosit|sapevi|fatto|fun fact|interessante/)) return pickResponse('curiosita');
+  // Standard matches
+  if (lower.match(/ciao|salve|buon|hello|hey|salut/)) return pickResponse('greeting');
   if (lower.match(/soci|iscritti|membri|tessera|matricola/)) return pickResponse('soci');
   if (lower.match(/attivit|corso|lezione|masterclass|campus|congresso/)) return pickResponse('attivita');
   if (lower.match(/biblio|libro|testo|pdf|dispens/)) return pickResponse('biblioteca');
   if (lower.match(/video|lezione registr|seminari/)) return pickResponse('videoteca');
-  if (lower.match(/contab|bilancio|uscit|entrat|paga|soldi|euro|costo/)) return pickResponse('contabilita');
-  if (lower.match(/shop|acquist|compra/)) return pickResponse('shop');
+  if (lower.match(/registr|antico|storia|cronolog|fondaz|timeline/)) return pickResponse('registri');
+  if (lower.match(/contab|bilancio|uscit|entrat|soldi|euro|costo/)) return pickResponse('contabilita');
+  if (lower.match(/shop|acquist|compra|negozio/)) return pickResponse('shop');
   if (lower.match(/albo|premio|onorific|trofeo/)) return pickResponse('albo');
   if (lower.match(/notific|avvis|scadenz/)) return pickResponse('notifiche');
-  if (lower.match(/media|foto|attestat|didatt/)) return pickResponse('media');
+  if (lower.match(/media|foto|attestat|didatt|immagin/)) return pickResponse('media');
   if (lower.match(/profilo|account|dati personal/)) return pickResponse('profilo');
-  if (lower.match(/aiut|help|cosa puoi|come funzion/)) return pickResponse('help');
-  if (lower.match(/magi|damaso|universit|umi/)) return pickResponse('magia');
+  if (lower.match(/agenda|calendario|event/)) return pickResponse('agenda');
+  if (lower.match(/pagament|ricevut|quota|rinnov/)) return pickResponse('pagamenti');
+  if (lower.match(/aiut|help|cosa puoi|come funzion|guida/)) return pickResponse('help');
+  if (lower.match(/magi|damaso|universit|umi|fernandez/)) return pickResponse('magia');
+  if (lower.match(/grazie|thanks|perfetto|ottimo/)) return '😊 È stato un piacere! Se hai altre domande, sono sempre qui. La magia non si ferma mai! ✨';
 
   const ctx = getPageContext(pathname);
-  if (ctx) return pickResponse(ctx);
+  if (ctx) return `Sei nella sezione **${ctx}**.\n\n${pickResponse(ctx)}`;
   return pickResponse('default');
+}
+
+function renderMagiText(text) {
+  return text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
+    i % 2 === 1 ? <strong key={i} className="text-purple-200 font-bold">{part}</strong> : part
+  );
 }
 
 export default function MagiChat() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'magi', text: 'Ciao! Sono MAGI, l\'intelligenza magica del portale UMI. Chiedimi qualsiasi cosa!' }
+    { role: 'magi', text: '✨ Ciao! Sono **MAGI**, l\'intelligenza magica del portale UMI. Posso navigare l\'app per te, spiegarti ogni sezione o insegnarti un trucco di magia! Chiedi **"aiuto"** per vedere tutto quello che so fare.' }
   ]);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
   const messagesEnd = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     messagesEnd.current?.scrollIntoView({ behavior: 'smooth' });
@@ -113,8 +185,17 @@ export default function MagiChat() {
     setTyping(true);
     setTimeout(() => {
       const response = generateResponse(userMsg, location.pathname);
-      setMessages(prev => [...prev, { role: 'magi', text: response }]);
-      setTyping(false);
+      if (response.startsWith('NAV::')) {
+        const parts = response.split('::');
+        const path = parts[1];
+        const msg = parts.slice(2).join('::');
+        setMessages(prev => [...prev, { role: 'magi', text: msg }]);
+        setTyping(false);
+        setTimeout(() => navigate(path), 800);
+      } else {
+        setMessages(prev => [...prev, { role: 'magi', text: response }]);
+        setTyping(false);
+      }
     }, 600 + Math.random() * 800);
   };
 
@@ -168,7 +249,7 @@ export default function MagiChat() {
                     ? 'bg-purple-600/40 text-purple-100 rounded-br-md'
                     : 'bg-[#1e1b4b] text-purple-100 rounded-bl-md border border-purple-500/20'
                 }`}>
-                  {m.text}
+                  {renderMagiText(m.text)}
                 </div>
               </div>
             ))}
@@ -191,8 +272,8 @@ export default function MagiChat() {
 
           {/* QUICK ACTIONS */}
           <div className="px-3 py-2 border-t border-purple-500/10 flex gap-1.5 overflow-x-auto">
-            {['Aiuto', 'Soci', 'Attività', 'Contabilità'].map(q => (
-              <button key={q} onClick={() => { setInput(q); setTimeout(() => { setMessages(prev => [...prev, { role: 'user', text: q }]); setTyping(true); setTimeout(() => { setMessages(prev => [...prev, { role: 'magi', text: generateResponse(q, location.pathname) }]); setTyping(false); }, 600); }, 50); }}
+            {['Aiuto', 'Trucco del giorno', 'Curiosità', 'Storia UMI'].map(q => (
+              <button key={q} onClick={() => { setInput(q); setTimeout(() => { const r = generateResponse(q, location.pathname); setMessages(prev => [...prev, { role: 'user', text: q }]); setTyping(true); setTimeout(() => { if (r.startsWith('NAV::')) { const p = r.split('::'); setMessages(prev => [...prev, { role: 'magi', text: p.slice(2).join('::') }]); setTyping(false); setTimeout(() => navigate(p[1]), 800); } else { setMessages(prev => [...prev, { role: 'magi', text: r }]); setTyping(false); } }, 600); }, 50); }}
                 className="text-[11px] px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 hover:bg-purple-500/25 transition-colors whitespace-nowrap border border-purple-500/20">
                 {q}
               </button>

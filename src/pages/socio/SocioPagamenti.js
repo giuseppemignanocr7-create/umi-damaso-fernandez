@@ -39,7 +39,7 @@ export default function SocioPagamenti() {
   };
 
   return (
-    <div>
+    <div className="magic-fade-in">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-umi-text tracking-wider uppercase">Storico Pagamenti</h1>
         <p className="text-umi-muted text-sm">Riepilogo dei tuoi pagamenti e rinnovi.</p>
@@ -102,8 +102,8 @@ export default function SocioPagamenti() {
 
       {/* PAYMENT DETAIL / RECEIPT MODAL */}
       {selected && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
-          <div className="bg-umi-card border border-umi-border rounded-2xl max-w-sm w-full" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 magic-backdrop" onClick={() => setSelected(null)}>
+          <div className="bg-umi-card border border-umi-border rounded-2xl max-w-md w-full magic-modal" onClick={e => e.stopPropagation()}>
             <div className="p-6">
               <div className="flex items-start justify-between mb-6">
                 <div className="w-12 h-12 rounded-full bg-umi-primary/20 flex items-center justify-center">

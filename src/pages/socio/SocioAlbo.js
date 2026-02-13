@@ -13,7 +13,7 @@ export default function SocioAlbo() {
   );
 
   return (
-    <div>
+    <div className="magic-fade-in">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-umi-text tracking-wider uppercase">Albo d'Oro</h1>
         <p className="text-umi-muted text-sm">La bacheca dei trofei e titoli dell'Università.</p>
@@ -33,7 +33,7 @@ export default function SocioAlbo() {
           <p className="text-umi-muted text-sm">{search ? 'Nessun risultato trovato.' : "Nessuna onorificenza registrata nell'Albo d'Oro."}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 magic-stagger">
           {filtered.map(premio => (
             <div key={premio.id} onClick={() => setSelected(premio)} className="bg-umi-card border border-umi-gold/30 rounded-xl p-5 card-hover cursor-pointer group">
               <div className="flex items-center gap-3 mb-3">
@@ -53,8 +53,8 @@ export default function SocioAlbo() {
       )}
 
       {selected && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
-          <div className="bg-umi-card border border-umi-gold/30 rounded-2xl max-w-md w-full" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 magic-backdrop" onClick={() => setSelected(null)}>
+          <div className="bg-umi-card border border-umi-gold/30 rounded-2xl max-w-md w-full magic-modal" onClick={e => e.stopPropagation()}>
             <div className="text-center pt-8 pb-4">
               <div className="w-20 h-20 rounded-full bg-umi-gold/20 flex items-center justify-center text-4xl mx-auto mb-4">🏆</div>
               <button onClick={() => setSelected(null)} className="absolute top-4 right-4 p-1.5 hover:bg-umi-input rounded-full transition-colors"><X size={18} className="text-umi-muted" /></button>

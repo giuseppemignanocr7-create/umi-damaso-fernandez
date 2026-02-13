@@ -17,7 +17,7 @@ export default function SocioBiblioteca() {
   });
 
   return (
-    <div>
+    <div className="magic-fade-in">
       <div className="mb-2">
         <h1 className="text-2xl font-bold text-umi-text tracking-wider uppercase">Biblioteca Virtuale UMI</h1>
         <p className="text-umi-muted text-sm">Archivio digitale di testi, dispense e pergamene accademiche.</p>
@@ -46,9 +46,9 @@ export default function SocioBiblioteca() {
           <p className="text-umi-muted text-sm">Nessun documento trovato nella biblioteca virtuale.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 magic-stagger">
           {filtered.map(doc => (
-            <div key={doc.id} onClick={() => setSelected(doc)} className="bg-umi-card border border-umi-border rounded-xl p-5 card-hover cursor-pointer group">
+            <div key={doc.id} onClick={() => setSelected(doc)} className="bg-umi-card border border-umi-border rounded-xl p-5 card-magic magic-glow cursor-pointer group">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-xs bg-umi-primary/20 text-umi-primary-light px-2 py-0.5 rounded-full">{doc.categoria}</span>
               </div>
@@ -66,8 +66,8 @@ export default function SocioBiblioteca() {
 
       {/* DETAIL MODAL */}
       {selected && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
-          <div className="bg-umi-card border border-umi-border rounded-2xl max-w-lg w-full" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 magic-backdrop" onClick={() => setSelected(null)}>
+          <div className="bg-umi-card border border-umi-border rounded-2xl max-w-lg w-full magic-modal" onClick={e => e.stopPropagation()}>
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">

@@ -38,7 +38,7 @@ export default function SocioShop() {
   };
 
   return (
-    <div>
+    <div className="magic-fade-in">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-umi-text tracking-wider uppercase">Shop Universitario</h1>
         <p className="text-umi-muted text-sm">Esplora e acquista l'accesso ai nostri corsi, masterclass e oggettistica esclusiva.</p>
@@ -59,7 +59,7 @@ export default function SocioShop() {
           <p className="text-umi-muted text-sm">Nessuna attività disponibile con questo filtro.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 magic-stagger">
           {filtered.map(att => (
             <div key={att.id} onClick={() => setSelected(att)} className="bg-umi-card border border-umi-border rounded-xl overflow-hidden card-hover cursor-pointer">
               <div className="h-40 bg-umi-input flex items-center justify-center text-4xl relative">
@@ -98,8 +98,8 @@ export default function SocioShop() {
 
       {/* DETAIL MODAL */}
       {selected && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
-          <div className="bg-umi-card border border-umi-border rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 magic-backdrop" onClick={() => setSelected(null)}>
+          <div className="bg-umi-card border border-umi-border rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto magic-modal" onClick={e => e.stopPropagation()}>
             <div className="h-48 bg-umi-input flex items-center justify-center text-6xl relative">
               {selected.tipologia === 'Masterclass' ? '🎓' : selected.tipologia === 'Congresso UMI' ? '🏛️' : '📋'}
               <button onClick={() => setSelected(null)} className="absolute top-3 right-3 p-1.5 bg-black/40 rounded-full hover:bg-black/60 transition-colors">
