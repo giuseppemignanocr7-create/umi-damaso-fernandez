@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ADMIN_EMAIL } from '../supabaseClient';
 import Logo from '../components/shared/Logo';
+import { triggerHatBurst } from '../components/shared/MagicEffects';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -15,14 +16,26 @@ export default function LoginPage() {
 
   const [submitting, setSubmitting] = useState(false);
 
+  const btnRef = useRef(null);
+  const [entered, setEntered] = useState(false);
+
+  useEffect(() => { setTimeout(() => setEntered(true), 100); }, []);
+
+  const fireMagic = (el) => {
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    triggerHatBurst(rect.left + rect.width / 2, rect.top);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSubmitting(true);
+    fireMagic(btnRef.current);
     try {
       const result = await login(email, isAdminEmail ? '' : password);
       if (result.success) {
-        navigate(result.isAdmin ? '/admin' : '/socio');
+        setTimeout(() => navigate(result.isAdmin ? '/admin' : '/socio'), 600);
       } else {
         setError(result.error);
       }
@@ -33,14 +46,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-umi-bg flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-umi-bg flex items-center justify-center p-4 overflow-hidden relative">
+      {/* AMBIENT FLOATING STARS */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(12)].map((_, i) => (
+          <div key={i} className="absolute text-umi-gold/30" style={{
+            left: `${8 + (i * 7.5) % 90}%`,
+            top: `${10 + (i * 13) % 80}%`,
+            fontSize: `${6 + (i % 4) * 3}px`,
+            animation: `floatStar ${3 + (i % 3)}s ease-in-out infinite ${i * 0.4}s`,
+          }}>{['✦', '✧', '★', '·'][i % 4]}</div>
+        ))}
+      </div>
+
+      <div className={`w-full max-w-md transition-all duration-700 ${entered ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-95'}`} style={{ transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)' }}>
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <Logo size="lg" showText={false} />
+            <div className={`transition-all duration-1000 ${entered ? 'scale-100 rotate-0' : 'scale-50 rotate-12'}`} style={{ transitionDelay: '0.2s', transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
+              <Logo size="xl" showText={false} />
+            </div>
           </div>
-          <h1 className="small-caps text-2xl font-bold text-umi-text tracking-[3px] mb-1">DAMASO FERNANDEZ</h1>
-          <p className="text-umi-gold text-sm tracking-wider uppercase">Università Magica Internazionale</p>
+          <h1 className={`small-caps text-2xl font-bold tracking-[3px] mb-1 magic-gradient-text transition-all duration-700 ${entered ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '0.4s' }}>DAMASO FERNANDEZ</h1>
+          <p className={`text-umi-gold text-sm tracking-wider uppercase transition-all duration-700 ${entered ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '0.6s' }}>Università Magica Internazionale</p>
         </div>
 
         <div className="bg-umi-card border border-umi-border rounded-xl p-8">
@@ -89,10 +116,12 @@ export default function LoginPage() {
             )}
 
             <button
+              ref={btnRef}
               type="submit"
-              className="w-full gradient-primary text-white font-semibold py-3 rounded-lg hover:opacity-90 transition-opacity tracking-wider"
+              className="w-full gradient-primary text-white font-semibold py-3 rounded-lg hover:opacity-90 hover:shadow-lg hover:shadow-umi-primary/30 transition-all tracking-wider relative overflow-hidden group"
             >
-              {submitting ? 'Accesso...' : 'Entra →'}
+              <span className="relative z-10">{submitting ? '✨ Incantesimo...' : '✦ Entra →'}</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
             </button>
           </form>
 
@@ -113,18 +142,20 @@ export default function LoginPage() {
           <p className="text-center text-xs text-umi-muted mb-4">Esplora il portale completo senza registrazione</p>
           <div className="grid grid-cols-2 gap-3">
             <button
-              onClick={() => { const r = loginDemo('admin'); if (r.success) navigate('/admin'); }}
-              className="py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:scale-[1.02] hover:shadow-lg"
+              onClick={(e) => { fireMagic(e.currentTarget); const r = loginDemo('admin'); if (r.success) setTimeout(() => navigate('/admin'), 600); }}
+              className="py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-purple-500/30 relative overflow-hidden group"
               style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}
             >
-              🛡️ Demo Admin
+              <span className="relative z-10">🛡️ Demo Admin</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
             </button>
             <button
-              onClick={() => { const r = loginDemo('socio'); if (r.success) navigate('/socio'); }}
-              className="py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:scale-[1.02] hover:shadow-lg"
+              onClick={(e) => { fireMagic(e.currentTarget); const r = loginDemo('socio'); if (r.success) setTimeout(() => navigate('/socio'), 600); }}
+              className="py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-indigo-500/30 relative overflow-hidden group"
               style={{ background: 'linear-gradient(135deg, #6366f1, #818cf8)' }}
             >
-              🎭 Demo Socio
+              <span className="relative z-10">🎭 Demo Socio</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
             </button>
           </div>
         </div>

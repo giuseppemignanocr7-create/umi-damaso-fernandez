@@ -34,6 +34,7 @@ import SocioPagamenti from './pages/socio/SocioPagamenti';
 import SocioMedia from './pages/socio/SocioMedia';
 import SocioAgenda from './pages/socio/SocioAgenda';
 import MagiChat from './components/shared/MagiChat';
+import MagicEffects from './components/shared/MagicEffects';
 
 function LoadingScreen() {
   return (
@@ -116,6 +117,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <MagicEffects />
         <AppRoutes />
         <MagiWrapper />
       </AuthProvider>
