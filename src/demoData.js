@@ -112,7 +112,24 @@ export const DEMO_NOTIFICHE = [
 ];
 
 export const DEMO_PAGAMENTI = [
-  { id: 'p1', causale: 'Masterclass Cartomagia Avanzata', data: '2026-02-10', importo: 60, stato: 'Saldato' },
-  { id: 'p2', causale: 'Mazzo Damaso Signature', data: '2026-02-08', importo: 25, stato: 'Saldato' },
-  { id: 'p3', causale: 'Viaggio Studi Praga (Acconto)', data: '2026-02-12', importo: 150, stato: 'Pendente' },
+  { id: 'p1', causale: 'Masterclass Cartomagia Avanzata', data: '2026-02-10', importo: 60, stato: 'Saldato', metodo: 'PayPal', ricevuta_num: 'RIC-2026-00001', socio_id: 'demo-user-001' },
+  { id: 'p2', causale: 'Mazzo Damaso Signature', data: '2026-02-08', importo: 25, stato: 'Saldato', metodo: 'Contanti', ricevuta_num: 'RIC-2026-00002', socio_id: 'demo-user-001' },
+  { id: 'p3', causale: 'Viaggio Studi Praga (Acconto)', data: '2026-02-12', importo: 150, stato: 'Pendente', metodo: 'Bonifico', ricevuta_num: 'RIC-2026-00003', socio_id: 'demo-user-001' },
+  { id: 'p4', causale: 'Campus Online Mentalismo', data: '2026-01-20', importo: 100, stato: 'Saldato', metodo: 'PayPal', ricevuta_num: 'RIC-2026-00004', socio_id: 'demo-user-001' },
+  { id: 'p5', causale: 'Quota Associativa 2026', data: '2026-01-01', importo: 50, stato: 'Saldato', metodo: 'Bonifico', ricevuta_num: 'RIC-2026-00005', socio_id: 'demo-user-001' },
+];
+
+export const DEMO_ISCRIZIONI = [
+  { id: 'isc1', socio_id: 'demo-user-001', attivita_id: 'a1', stato: 'Iscritto', pagato: true, importo_pagato: 60, created_at: '2026-02-10T10:00:00Z' },
+  { id: 'isc2', socio_id: 'demo-user-001', attivita_id: 'a3', stato: 'Iscritto', pagato: true, importo_pagato: 100, created_at: '2026-01-20T10:00:00Z' },
+  { id: 'isc3', socio_id: 'demo-user-001', attivita_id: 'a4', stato: 'Iscritto', pagato: false, importo_pagato: 0, created_at: '2026-02-01T10:00:00Z' },
+  { id: 'isc4', socio_id: 'demo-user-001', attivita_id: 'a7', stato: 'Iscritto', pagato: false, importo_pagato: 0, created_at: '2026-02-05T10:00:00Z' },
+  { id: 'isc5', socio_id: 's2', attivita_id: 'a1', stato: 'Iscritto', pagato: true, importo_pagato: 60, created_at: '2026-02-11T10:00:00Z' },
+  { id: 'isc6', socio_id: 's3', attivita_id: 'a4', stato: 'Iscritto', pagato: false, importo_pagato: 0, created_at: '2026-02-01T14:00:00Z' },
+];
+
+export const DEMO_PRESENZE = [
+  { id: 'pr1', socio_id: 'demo-user-001', attivita_id: 'a1', data: '2026-03-15', presente: true, note: '' },
+  { id: 'pr2', socio_id: 's2', attivita_id: 'a1', data: '2026-03-15', presente: true, note: '' },
+  { id: 'pr3', socio_id: 'demo-user-001', attivita_id: 'a4', data: '2026-06-10', presente: true, note: '' },
 ];

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAttivita } from '../../supabaseStore';
-import { X, MapPin, Clock, Calendar, Check } from 'lucide-react';
+import { fetchAttivita, createIscrizione } from '../../supabaseStore';
+import { useAuth } from '../../context/AuthContext';
+import { X, MapPin, Clock, Calendar, Check, Loader2 } from 'lucide-react';
 
 export default function SocioCorsi() {
   const [tab, setTab] = useState('Tutti');
   const [allAttivita, setAllAttivita] = useState([]);
   const [selected, setSelected] = useState(null);
   const [toast, setToast] = useState('');
+  const [saving, setSaving] = useState(false);
+  const { profile } = useAuth();
   useEffect(() => { fetchAttivita().then(d => setAllAttivita(d.filter(a => a.pubblicata))).catch(() => {}); }, []);
 
   const filtered = allAttivita.filter(a => {
@@ -17,9 +20,15 @@ export default function SocioCorsi() {
     return true;
   });
 
-  const handleEnroll = (att) => {
-    setSelected(null);
-    setToast(`Iscrizione a "${att.titolo}" confermata!`);
+  const handleEnroll = async (att) => {
+    setSaving(true);
+    try {
+      const socioId = profile?.id || 'demo-user-001';
+      await createIscrizione({ socio_id: socioId, attivita_id: att.id, pagato: att.costo === 0, importo_pagato: att.costo || 0 });
+      setSelected(null);
+      setToast(`Iscrizione a "${att.titolo}" salvata!`);
+    } catch (e) { setToast('Errore: ' + (e.message || 'salvataggio fallito')); }
+    setSaving(false);
     setTimeout(() => setToast(''), 3000);
   };
 
@@ -96,8 +105,8 @@ export default function SocioCorsi() {
                 {selected.docente && <div className="flex items-center gap-2 text-xs text-umi-muted">👨‍🏫 {selected.docente}</div>}
                 <div className="flex items-center gap-2 text-xs text-umi-muted">💰 {selected.costo > 0 ? `€${selected.costo}` : 'Gratuito'}</div>
               </div>
-              <button onClick={() => handleEnroll(selected)} className="w-full gradient-primary text-white text-sm font-semibold py-3 rounded-lg hover:opacity-90 transition-opacity">
-                {new Date(selected.data) < new Date() ? '📝 Rivedi Materiale' : '✅ Conferma Iscrizione'}
+              <button onClick={() => handleEnroll(selected)} disabled={saving} className={`w-full gradient-primary text-white text-sm font-semibold py-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 ${saving ? 'opacity-60' : ''}`}>
+                {saving ? <><Loader2 size={16} className="animate-spin" /> Salvataggio...</> : new Date(selected.data) < new Date() ? '📝 Rivedi Materiale' : '✅ Conferma Iscrizione'}
               </button>
             </div>
           </div>

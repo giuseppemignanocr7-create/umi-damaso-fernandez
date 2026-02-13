@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { DEMO_PAGAMENTI } from '../../demoData';
-import { X, Receipt, Calendar, CreditCard, Download, Check } from 'lucide-react';
+import { fetchPagamentiSocio, updatePagamentoSocio } from '../../supabaseStore';
+import { X, Receipt, Calendar, CreditCard, Download, Check, Loader2 } from 'lucide-react';
 
 export default function SocioPagamenti() {
-  const { profile, isDemo } = useAuth();
-  const pagamenti = isDemo ? DEMO_PAGAMENTI : (profile?.pagamenti || []);
+  const { profile } = useAuth();
+  const [pagamenti, setPagamenti] = useState([]);
   const [selected, setSelected] = useState(null);
   const [filter, setFilter] = useState('Tutti');
   const [toast, setToast] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const socioId = profile?.id || 'demo-user-001';
+    fetchPagamentiSocio(socioId).then(setPagamenti).catch(() => {});
+  }, [profile]);
 
   const filtered = pagamenti.filter(p => {
     if (filter === 'Saldati') return p.stato === 'Saldato';
@@ -20,9 +26,15 @@ export default function SocioPagamenti() {
   const saldato = pagamenti.filter(p => p.stato === 'Saldato').reduce((s, p) => s + (p.importo || 0), 0);
   const pendente = totale - saldato;
 
-  const handlePay = (p) => {
-    setSelected(null);
-    setToast(`Pagamento "${p.causale}" effettuato!`);
+  const handlePay = async (p) => {
+    setSaving(true);
+    try {
+      await updatePagamentoSocio(p.id, { stato: 'Saldato', metodo: 'PayPal' });
+      setPagamenti(prev => prev.map(x => x.id === p.id ? { ...x, stato: 'Saldato', metodo: 'PayPal' } : x));
+      setSelected(null);
+      setToast(`Pagamento "${p.causale}" salvato!`);
+    } catch (e) { setToast('Errore: ' + (e.message || 'salvataggio fallito')); }
+    setSaving(false);
     setTimeout(() => setToast(''), 3000);
   };
 
@@ -130,8 +142,8 @@ export default function SocioPagamenti() {
 
               <div className="flex gap-3">
                 {selected.stato === 'Pendente' ? (
-                  <button onClick={() => handlePay(selected)} className="flex-1 gradient-gold text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                    <CreditCard size={16} /> Paga Ora
+                  <button onClick={() => handlePay(selected)} disabled={saving} className={`flex-1 gradient-gold text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 ${saving ? 'opacity-60' : ''}`}>
+                    {saving ? <><Loader2 size={16} className="animate-spin" /> Salvataggio...</> : <><CreditCard size={16} /> Paga Ora</>}
                   </button>
                 ) : (
                   <button className="flex-1 gradient-primary text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAttivita } from '../../supabaseStore';
-import { X, MapPin, Clock, Users, Calendar, Check } from 'lucide-react';
+import { fetchAttivita, createIscrizione, createPagamentoSocio, createEntrata } from '../../supabaseStore';
+import { useAuth } from '../../context/AuthContext';
+import { X, MapPin, Clock, Users, Calendar, Check, Loader2 } from 'lucide-react';
 
 export default function SocioShop() {
   const [allPublished, setAllPublished] = useState([]);
   const [selected, setSelected] = useState(null);
   const [toast, setToast] = useState('');
   const [filter, setFilter] = useState('Tutti');
+  const [saving, setSaving] = useState(false);
+  const { profile } = useAuth();
   useEffect(() => { fetchAttivita().then(d => setAllPublished(d.filter(a => a.pubblicata))).catch(() => {}); }, []);
 
   const filtered = allPublished.filter(a => {
@@ -17,9 +20,20 @@ export default function SocioShop() {
     return true;
   });
 
-  const handleAction = (att) => {
-    setSelected(null);
-    setToast(att.costo > 0 ? `Acquisto "${att.titolo}" completato!` : `Iscrizione a "${att.titolo}" confermata!`);
+  const handleAction = async (att) => {
+    setSaving(true);
+    try {
+      const socioId = profile?.id || 'demo-user-001';
+      const socioNome = profile ? `${profile.nome} ${profile.cognome}` : 'Demo User';
+      await createIscrizione({ socio_id: socioId, attivita_id: att.id, pagato: att.costo === 0, importo_pagato: att.costo });
+      if (att.costo > 0) {
+        await createPagamentoSocio({ socio_id: socioId, causale: att.titolo, importo: att.costo, data: new Date().toISOString().slice(0,10), stato: 'Saldato', metodo: 'PayPal', attivita_id: att.id });
+        await createEntrata({ socio_id: socioId, socio_nome: socioNome, causale: att.titolo, importo: att.costo, data: new Date().toISOString().slice(0,10), stato: 'Saldato', metodo: 'PayPal', attivita_id: att.id });
+      }
+      setSelected(null);
+      setToast(att.costo > 0 ? `Acquisto "${att.titolo}" salvato!` : `Iscrizione a "${att.titolo}" salvata!`);
+    } catch (e) { setToast('Errore: ' + (e.message || 'salvataggio fallito')); }
+    setSaving(false);
     setTimeout(() => setToast(''), 3000);
   };
 
@@ -106,9 +120,9 @@ export default function SocioShop() {
                 <div className="flex items-center gap-2 text-xs text-umi-muted"><Users size={14} className="text-umi-primary" /> {selected.modalita}</div>
                 {selected.docente && <div className="flex items-center gap-2 text-xs text-umi-muted">👨‍🏫 {selected.docente}</div>}
               </div>
-              <button onClick={() => handleAction(selected)}
-                className={`w-full text-white text-sm font-semibold py-3 rounded-lg hover:opacity-90 transition-opacity ${selected.costo > 0 ? 'gradient-gold' : 'gradient-primary'}`}>
-                {selected.costo > 0 ? '🛒 ACQUISTA ORA' : '✅ ISCRIVITI GRATIS'}
+              <button onClick={() => handleAction(selected)} disabled={saving}
+                className={`w-full text-white text-sm font-semibold py-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 ${selected.costo > 0 ? 'gradient-gold' : 'gradient-primary'} ${saving ? 'opacity-60' : ''}`}>
+                {saving ? <><Loader2 size={16} className="animate-spin" /> Salvataggio...</> : selected.costo > 0 ? '🛒 ACQUISTA ORA' : '✅ ISCRIVITI GRATIS'}
               </button>
             </div>
           </div>

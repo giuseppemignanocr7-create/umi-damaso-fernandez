@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchAttivita } from '../../supabaseStore';
-import { X, MapPin, Clock, Calendar, Users, Check } from 'lucide-react';
+import { fetchAttivita, createEntrata } from '../../supabaseStore';
+import { X, MapPin, Clock, Calendar, Users, Check, Loader2 } from 'lucide-react';
 
 export default function UmiShop() {
   const navigate = useNavigate();
   const [paidActivities, setPaidActivities] = useState([]);
   const [selected, setSelected] = useState(null);
   const [toast, setToast] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchAttivita().then(data => setPaidActivities(data.filter(a => a.pubblicata && a.costo > 0))).catch(() => {});
   }, []);
 
-  const handleBuy = (att) => {
-    setSelected(null);
-    setToast(`Test acquisto "${att.titolo}" (€${att.costo}) completato!`);
+  const handleBuy = async (att) => {
+    setSaving(true);
+    try {
+      await createEntrata({ socio_nome: 'Test Admin', causale: att.titolo, importo: att.costo, data: new Date().toISOString().slice(0,10), stato: 'Saldato', metodo: 'Test', attivita_id: att.id });
+      setSelected(null);
+      setToast(`Test acquisto "${att.titolo}" (€${att.costo}) salvato!`);
+    } catch (e) { setToast('Errore: ' + (e.message || 'salvataggio fallito')); }
+    setSaving(false);
     setTimeout(() => setToast(''), 3000);
   };
 
@@ -77,8 +83,8 @@ export default function UmiShop() {
                 <div className="flex items-center gap-2 text-xs text-umi-muted"><Users size={14} className="text-umi-primary" /> {selected.modalita}</div>
                 {selected.docente && <div className="flex items-center gap-2 text-xs text-umi-muted">👨‍🏫 {selected.docente}</div>}
               </div>
-              <button onClick={() => handleBuy(selected)} className="w-full gradient-gold text-white text-sm font-semibold py-3 rounded-lg hover:opacity-90 transition-opacity">
-                🛒 TEST ACQUISTO (€{selected.costo})
+              <button onClick={() => handleBuy(selected)} disabled={saving} className={`w-full gradient-gold text-white text-sm font-semibold py-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 ${saving ? 'opacity-60' : ''}`}>
+                {saving ? <><Loader2 size={16} className="animate-spin" /> Salvataggio...</> : `🛒 TEST ACQUISTO (€${selected.costo})`}
               </button>
             </div>
           </div>

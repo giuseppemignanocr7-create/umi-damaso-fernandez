@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Search, X, Mail, Phone, MapPin, Calendar, Shield, UserCheck } from 'lucide-react';
+import { Search, X, Mail, Phone, MapPin, Calendar, Shield, UserCheck, Trash2 } from 'lucide-react';
 import { STATI_SOCIO } from '../../supabaseClient';
-import { fetchProfiles } from '../../supabaseStore';
+import { fetchProfiles, updateProfile, deleteProfile } from '../../supabaseStore';
 
 export default function ElencoSoci() {
   const [search, setSearch] = useState('');
@@ -21,10 +21,24 @@ export default function ElencoSoci() {
     return matchSearch && matchStato;
   });
 
-  const handleStatusChange = (socio, newStatus) => {
-    setSoci(prev => prev.map(s => s.id === socio.id ? { ...s, stato: newStatus } : s));
-    setSelected(prev => prev ? { ...prev, stato: newStatus } : null);
-    setToast(`Stato di ${socio.nome} ${socio.cognome} aggiornato a "${newStatus}"`);
+  const handleStatusChange = async (socio, newStatus) => {
+    try {
+      await updateProfile(socio.id, { stato: newStatus });
+      setSoci(prev => prev.map(s => s.id === socio.id ? { ...s, stato: newStatus } : s));
+      setSelected(prev => prev ? { ...prev, stato: newStatus } : null);
+      setToast(`Stato di ${socio.nome} ${socio.cognome} aggiornato a "${newStatus}"`);
+    } catch (e) { setToast('Errore: ' + (e.message || 'salvataggio fallito')); }
+    setTimeout(() => setToast(''), 3000);
+  };
+
+  const handleDelete = async (socio) => {
+    if (!window.confirm(`Eliminare ${socio.nome} ${socio.cognome}?`)) return;
+    try {
+      await deleteProfile(socio.id);
+      setSoci(prev => prev.filter(s => s.id !== socio.id));
+      setSelected(null);
+      setToast(`${socio.nome} ${socio.cognome} eliminato`);
+    } catch (e) { setToast('Errore: ' + (e.message || 'eliminazione fallita')); }
     setTimeout(() => setToast(''), 3000);
   };
 
@@ -175,6 +189,9 @@ export default function ElencoSoci() {
                   ))}
                 </div>
               </div>
+              <button onClick={() => handleDelete(selected)} className="w-full mt-2 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-red-400 border border-red-500/30 hover:bg-red-500/10 transition-colors">
+                <Trash2 size={14} /> Elimina Socio
+              </button>
             </div>
           </div>
         </div>
