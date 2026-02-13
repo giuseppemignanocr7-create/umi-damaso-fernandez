@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { fetchAttivita } from '../../supabaseStore';
+import { X, MapPin, Clock, Calendar, Check } from 'lucide-react';
 
 export default function SocioCorsi() {
   const [tab, setTab] = useState('Tutti');
   const [allAttivita, setAllAttivita] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [toast, setToast] = useState('');
   useEffect(() => { fetchAttivita().then(d => setAllAttivita(d.filter(a => a.pubblicata))).catch(() => {}); }, []);
 
   const filtered = allAttivita.filter(a => {
@@ -14,6 +17,12 @@ export default function SocioCorsi() {
     return true;
   });
 
+  const handleEnroll = (att) => {
+    setSelected(null);
+    setToast(`Iscrizione a "${att.titolo}" confermata!`);
+    setTimeout(() => setToast(''), 3000);
+  };
+
   return (
     <div>
       <div className="mb-6">
@@ -21,13 +30,14 @@ export default function SocioCorsi() {
         <p className="text-umi-muted text-sm">Il tuo registro delle attività e lezioni.</p>
       </div>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
         {['Tutti', 'Futuri', 'Passati', 'Online'].map(f => (
           <button key={f} onClick={() => setTab(f)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${tab === f ? 'bg-umi-primary text-white' : 'bg-umi-card text-umi-muted border border-umi-border hover:border-umi-primary'}`}>
+            className={`px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors ${tab === f ? 'bg-umi-primary text-white' : 'bg-umi-card text-umi-muted border border-umi-border hover:border-umi-primary'}`}>
             {f}
           </button>
         ))}
+        <span className="text-xs text-umi-dim self-center ml-auto">{filtered.length} corsi</span>
       </div>
 
       {filtered.length === 0 ? (
@@ -37,22 +47,66 @@ export default function SocioCorsi() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(att => (
-            <div key={att.id} className="bg-umi-card border border-umi-border rounded-xl p-5 card-hover">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-lg">
-                  {att.tipologia === 'Lezione' ? '📖' : att.tipologia === 'Masterclass' ? '🎓' : '📋'}
-                </span>
-                <span className="text-xs bg-umi-primary/20 text-umi-primary-light px-2 py-0.5 rounded-full uppercase">{att.tipologia}</span>
+          {filtered.map(att => {
+            const isPast = new Date(att.data) < new Date();
+            return (
+              <div key={att.id} onClick={() => setSelected(att)} className="bg-umi-card border border-umi-border rounded-xl p-5 card-hover cursor-pointer group">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">
+                    {att.tipologia === 'Lezione' ? '📖' : att.tipologia === 'Masterclass' ? '🎓' : att.tipologia === 'Congresso UMI' ? '🏛️' : att.tipologia === 'Viaggio Studi' ? '✈️' : '📋'}
+                  </span>
+                  <span className="text-xs bg-umi-primary/20 text-umi-primary-light px-2 py-0.5 rounded-full uppercase">{att.tipologia}</span>
+                  {isPast && <span className="text-[10px] bg-umi-dim/20 text-umi-dim px-1.5 py-0.5 rounded-full">PASSATO</span>}
+                </div>
+                <h3 className="text-sm font-bold text-umi-text mb-1 group-hover:text-umi-primary transition-colors">{att.titolo}</h3>
+                <div className="flex items-center gap-3 text-[10px] text-umi-muted mb-1">
+                  {att.data && <span className="flex items-center gap-0.5"><Calendar size={10} /> {new Date(att.data).toLocaleDateString('it-IT')}</span>}
+                  {att.durata && <span className="flex items-center gap-0.5"><Clock size={10} /> {att.durata}</span>}
+                </div>
+                {att.luogo && <p className="text-[10px] text-umi-dim flex items-center gap-0.5 mb-2"><MapPin size={10} /> {att.luogo}</p>}
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-umi-dim">{att.modalita === 'In Presenza' ? '🏫 Presenza' : '💻 Online'}</span>
+                  <span className={`text-xs px-3 py-1 rounded-full font-semibold ${isPast ? 'bg-blue-500/20 text-blue-300' : 'bg-umi-green/20 text-umi-green'}`}>
+                    {isPast ? '📝 Completato' : '✅ Disponibile'}
+                  </span>
+                </div>
               </div>
-              <h3 className="text-sm font-bold text-umi-text mb-1">{att.titolo}</h3>
-              <p className="text-xs text-umi-muted mb-1">{att.data}</p>
-              <p className="text-xs text-umi-dim mb-3">{att.modalita === 'In Presenza' ? 'Presenza' : 'Online'}</p>
-              <button className="text-xs bg-umi-green/20 text-umi-green px-3 py-1.5 rounded-full font-semibold">
-                ✅ Disponibile
+            );
+          })}
+        </div>
+      )}
+
+      {/* DETAIL MODAL */}
+      {selected && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
+          <div className="bg-umi-card border border-umi-border rounded-2xl max-w-lg w-full" onClick={e => e.stopPropagation()}>
+            <div className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <span className="text-4xl">{selected.tipologia === 'Masterclass' ? '🎓' : selected.tipologia === 'Congresso UMI' ? '🏛️' : '📖'}</span>
+                <button onClick={() => setSelected(null)} className="p-1.5 hover:bg-umi-input rounded-full transition-colors"><X size={18} className="text-umi-muted" /></button>
+              </div>
+              <span className="text-xs bg-umi-primary/20 text-umi-primary-light px-2 py-0.5 rounded-full">{selected.tipologia}</span>
+              <h2 className="text-lg font-bold text-umi-text mt-2 mb-2">{selected.titolo}</h2>
+              {selected.descrizione && <p className="text-sm text-umi-muted mb-4">{selected.descrizione}</p>}
+              <div className="space-y-2 mb-6 bg-umi-input rounded-lg p-4">
+                {selected.data && <div className="flex items-center gap-2 text-xs text-umi-muted"><Calendar size={14} className="text-umi-primary" /> {new Date(selected.data).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</div>}
+                {selected.durata && <div className="flex items-center gap-2 text-xs text-umi-muted"><Clock size={14} className="text-umi-primary" /> {selected.durata}</div>}
+                {selected.luogo && <div className="flex items-center gap-2 text-xs text-umi-muted"><MapPin size={14} className="text-umi-primary" /> {selected.luogo}</div>}
+                <div className="flex items-center gap-2 text-xs text-umi-muted">{selected.modalita === 'In Presenza' ? '🏫' : '💻'} {selected.modalita}</div>
+                {selected.docente && <div className="flex items-center gap-2 text-xs text-umi-muted">👨‍🏫 {selected.docente}</div>}
+                <div className="flex items-center gap-2 text-xs text-umi-muted">💰 {selected.costo > 0 ? `€${selected.costo}` : 'Gratuito'}</div>
+              </div>
+              <button onClick={() => handleEnroll(selected)} className="w-full gradient-primary text-white text-sm font-semibold py-3 rounded-lg hover:opacity-90 transition-opacity">
+                {new Date(selected.data) < new Date() ? '📝 Rivedi Materiale' : '✅ Conferma Iscrizione'}
               </button>
             </div>
-          ))}
+          </div>
+        </div>
+      )}
+
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-umi-green text-white px-6 py-3 rounded-xl shadow-lg z-50 flex items-center gap-2 animate-pulse">
+          <Check size={18} /> {toast}
         </div>
       )}
     </div>
